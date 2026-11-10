@@ -1,7 +1,10 @@
+using TaskFlow.Web.Services;
+using TaskFlow.Web.Services.Implementation;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorPages();
-
+builder.Services.AddSingleton<ITaskService, InMemoryTaskService>();
 
 var app = builder.Build();
 
@@ -19,8 +22,5 @@ app.UseRouting();
 
 app.MapRazorPages();
 
-
-
-app.MapGet("/", () => "Hello World!");
 
 app.Run();

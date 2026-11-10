@@ -1,6 +1,157 @@
 ﻿@page
+@using TaskFlow.Web.Models
 @model TaskFlow.Web.Pages.IndexModel
 
-<h1>TaskFlow</h1>
+@{
+    ViewData["Title"] = "My Tasks";
+}
 
-<p>Welcome to TaskFlow.</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title">My Tasks</h1>
+        <p class="page-description mb-0">
+            Organize your work and stay productive.
+        </p>
+    </div>
+
+    <a asp-page="/Create"
+       class="btn btn-taskflow">
+        + Create Task
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success alert-dismissible fade show"
+         role="alert">
+
+        @message
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close">
+        </button>
+
+    </div>
+}
+
+
+<!-- Statistics -->
+<div class="row g-3 mb-4">
+
+    <div class="col-md-4">
+        <div class="tf-card">
+            <div class="text-muted">Total Tasks</div>
+            <div class="task-stat">@Model.TotalTasks</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="tf-card">
+            <div class="text-muted">Pending</div>
+            <div class="task-stat">@Model.PendingTasks</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="tf-card">
+            <div class="text-muted">Completed</div>
+            <div class="task-stat">@Model.CompletedTasks</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Task List -->
+<div class="tf-card">
+
+    <h5 class="mb-3">Task Overview</h5>
+
+    @if (Model.Tasks.Count == 0)
+    {
+        <div class="text-center py-5">
+            <h6>No tasks yet</h6>
+            <p class="text-muted">
+                Create your first task to get started.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+
+            <table class="table align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Priority</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var task in Model.Tasks)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">
+                                    @task.Title
+                                </div>
+
+                                <small class="text-muted">
+                                    @task.Description
+                                </small>
+                            </td>
+
+                            <td>
+                                <span class="badge @GetPriorityClass(task.Priority)">
+                                    @task.Priority
+                                </span>
+                            </td>
+
+                            <td>
+                                @(task.DueDate?.ToString("dd MMM yyyy") ?? "No date")
+                            </td>
+
+                            <td>
+                                @if (task.IsCompleted)
+                                {
+                                    <span class="badge bg-success">
+                                        Completed
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>
+
+@functions {
+    private static string GetPriorityClass(TaskPriority priority)
+    {
+        return priority switch
+        {
+            TaskPriority.High => "bg-danger",
+            TaskPriority.Medium => "bg-primary",
+            TaskPriority.Low => "bg-secondary",
+            _ => "bg-secondary"
+        };
+    }
+}
