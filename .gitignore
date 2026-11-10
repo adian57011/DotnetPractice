@@ -56,3 +56,6 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 /DotnetPractice/.vs/DotnetPractice.slnx
+/DotnetPractice/.vs/ProjectEvaluation
+/Razor
+/TaskFlow/.vs/TaskFlow.slnx
